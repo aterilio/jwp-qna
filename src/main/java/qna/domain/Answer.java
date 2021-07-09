@@ -1,5 +1,6 @@
 package qna.domain;
 
+import qna.exception.CannotDeleteException;
 import qna.exception.NotFoundException;
 import qna.exception.UnAuthorizedException;
 
@@ -117,7 +118,10 @@ public class Answer {
                 '}';
     }
 
-    public void toDelete(LocalDateTime deleteAt) {
+    public void toDelete(LocalDateTime deleteAt) throws CannotDeleteException {
+        if (this.deleted) {
+            throw new CannotDeleteException("이미 삭제된 답변입니다.");
+        }
         this.deleted = true;
         this.updatedAt = deleteAt;
     }

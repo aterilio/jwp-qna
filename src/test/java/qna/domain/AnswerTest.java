@@ -1,6 +1,7 @@
 package qna.domain;
 
 import org.junit.jupiter.api.Test;
+import qna.exception.CannotDeleteException;
 import qna.exception.NotFoundException;
 import qna.exception.UnAuthorizedException;
 
@@ -35,7 +36,7 @@ public class AnswerTest {
     }
 
     @Test
-    public void update_delete_success() {
+    public void update_delete_success() throws CannotDeleteException {
         Answer answer = new Answer(0L, UserTest.JAVAJIGI, QuestionTest.Q1, "test");
         assertThat(answer.isDeleted()).isFalse();
         assertThat(answer.getUpdatedAt()).isNull();
@@ -43,5 +44,14 @@ public class AnswerTest {
         answer.toDelete(LocalDateTime.now());
         assertThat(answer.isDeleted()).isTrue();
         assertThat(answer.getUpdatedAt()).isNotNull();
+    }
+
+    @Test
+    public void update_delete_failedByAlreadyDeleted() throws CannotDeleteException {
+        Answer answer = new Answer(0L, UserTest.JAVAJIGI, QuestionTest.Q1, "test");
+        answer.toDelete(LocalDateTime.now());
+        assertThatThrownBy(() -> {
+            answer.toDelete(LocalDateTime.now());
+        }).isInstanceOf(CannotDeleteException.class);
     }
 }
