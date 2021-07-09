@@ -116,4 +116,9 @@ public class Answer {
                 ", writerId=" + writer +
                 '}';
     }
+
+    public void toDelete(LocalDateTime deleteAt) {
+        this.deleted = true;
+        this.updatedAt = deleteAt;
+    }
 }
