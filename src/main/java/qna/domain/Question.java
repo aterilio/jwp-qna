@@ -1,9 +1,13 @@
 package qna.domain;
 
+import qna.exception.CannotDeleteException;
+import qna.exception.UnAuthorizedException;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "question")
@@ -38,19 +42,19 @@ public class Question {
     public Question() {
     }
 
-    public Question(String title, String contents) {
-        this(null, title, contents);
+    public Question(User writer, String title, String contents) {
+        this(null, writer, title, contents);
     }
 
-    public Question(Long id, String title, String contents) {
+    public Question(Long id, User writer, String title, String contents) {
         this.id = id;
+
+        if (Objects.isNull(writer)) {
+            throw new UnAuthorizedException();
+        }
+
         this.title = title;
         this.contents = contents;
-    }
-
-    public Question writeBy(User writer) {
-        this.writer = writer;
-        return this;
     }
 
     public boolean isOwner(User writer) {
@@ -122,5 +126,13 @@ public class Question {
                 ", updatedAt=" + updatedAt +
                 ", deleted=" + deleted +
                 '}';
+    }
+
+    public void toDelete(LocalDateTime deleteAt) throws CannotDeleteException {
+        if (this.deleted) {
+            throw new CannotDeleteException("이미 삭제된 답변입니다.");
+        }
+        this.deleted = true;
+        this.updatedAt = deleteAt;
     }
 }

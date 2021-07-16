@@ -17,7 +17,7 @@ public class AnswerRepositoryTest {
     @Test
     void save() {
         User user = new User("id", "password", "name", "email");
-        Question question = new Question("title", "contents");
+        Question question = new Question(user, "title", "contents");
         String contents = "contents";
         Answer expected = new Answer(user, question, contents);
         Answer actual = answers.save(expected);
@@ -27,7 +27,7 @@ public class AnswerRepositoryTest {
     @Test
     void findById() {
         User user = new User("id", "password", "name", "email");
-        Question question = new Question("title", "contents");
+        Question question = new Question(user, "title", "contents");
         String contents = "contents";
         answers.save(new Answer(user, question, contents));
         Optional<Answer> actual = answers.findById(0L);

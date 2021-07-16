@@ -17,8 +17,7 @@ public class QuestionRepositoryTest {
     @Test
     void save() {
         User user = new User("id", "password", "name", "email");
-        Question expected = new Question("title", "contents");
-        expected.writeBy(user);
+        Question expected = new Question(user, "title", "contents");
         Question actual = questions.save(expected);
         assertThat(actual.getId()).isNotNull();
     }
@@ -26,8 +25,7 @@ public class QuestionRepositoryTest {
     @Test
     void findById() {
         User user = new User("id", "password", "name", "email");
-        Question question = new Question("title", "contents");
-        question.writeBy(user);
+        Question question = new Question(user, "title", "contents");
         questions.save(question);
         Optional<Question> actual = questions.findById(0L);
         assertThat(actual).isNotNull();
